@@ -137,14 +137,71 @@ nmap <target-ip>
 By performing the nmap scan, we get the following result.
 ![image](https://github.com/WhitewolfX01/Test/assets/126961828/2ec2a322-7757-4af0-9c62-5ca6316a4ed4)
 
+From the scan result, we found out that a admin page is running on port 9090. So let's go to this page.
+```
+http://<target-ip>:9090
+```
+![image](https://github.com/WhitewolfX01/Test/assets/126961828/68970234-171d-4b4f-b2f6-6ebf32fba545)
+
+On the admin page, we tried to login using default credentials, but we were unsuccessful. But we found out that the Openfire is of version 4.7.4.
+Performing a quick search on google, we found out that it is vulnerable to path traversal attack, that leads to Remote Code Execution(RCE).
+
+
+
 # Foothold
 
-[Describe the steps for obtaining an initial foothold (shell/command execution) on the target.]
+For initial foothold, we will use a publicly available script for getting the intial access. Clone this repo and move into it.
+```
+https://github.com/miko550/CVE-2023-32315.git
+cd CVE-2023-32315
+```
 
-# Lateral Movement (optional)
+Now install all the requirements for the script.
+```
+pip3 install -r requirements.txt
+```
 
-[Describe the steps for lateral movement. This can include Docker breakouts / escape-to-host, etc.]
+Now use the script to get a username and password to login into the admin panel.
+```
+python3 CVE-2023-32315.py -t http://<target-ip>:9090
+```
+Running the script, we will get the following output with a random username and password for login to the admin panel.
+![image](https://github.com/WhitewolfX01/Test/assets/126961828/4de5e1a5-52c8-4cb6-b271-65784556735c)
+Note: Your username and password will differ from the one generated here.
+
+Now let's login into the admin panel with the generated username and password.
+Congratulations! We have successfully logged into the admin panel.
+![image](https://github.com/WhitewolfX01/Test/assets/126961828/64e9bf38-acb5-44e0-a6e5-7061aa959a69)
+
 
 # Privilege Escalation
+We have accessed the admin panel, but we do not have the access to the server. Now we have to gain access of the server that is hosting the Openfire.
+While exploring the panel, we got across the plugins option.
+The plugins feature is used to upload custom plugins for use. 
+![image](https://github.com/WhitewolfX01/Test/assets/126961828/4c42219f-6e50-420e-82d3-d3ef8c91e524)
 
-[Describe the steps to obtaining root/administrator privileges on the box.]
+Now upload the openfire-management-tool-plugin.jar (present is the directory that you cloned from github) to the panel by clicking on Browse button, and select the .jar file and click Upload Plugin.
+It will be successfully uploaded.
+![image](https://github.com/WhitewolfX01/Test/assets/126961828/75fcc54e-f8d0-46a1-af91-c087c01939f5)
+
+Then click on Server option on the top and select Server Settings.
+![image](https://github.com/WhitewolfX01/Test/assets/126961828/e14a6781-cbe7-4f54-bc16-aa748759a6d4)
+
+From the left side menu, select Management Tools, and we got a screen like this.
+![image](https://github.com/WhitewolfX01/Test/assets/126961828/e42b8b4f-4a68-471b-b668-03c02b3a8c61)
+
+It will ask for password, enter "123" as password. You will get into management section.
+
+From the top menu, select System Command.
+![image](https://github.com/WhitewolfX01/Test/assets/126961828/fac40486-a665-4b99-9da7-75a20881647b)
+
+Then you will get a screen like this.
+![image](https://github.com/WhitewolfX01/Test/assets/126961828/3f4015b3-42a6-494d-bf66-58d37840fa57)
+
+Now enter ```whoami``` to check which user you are.
+![image](https://github.com/WhitewolfX01/Test/assets/126961828/b63d9303-b6ae-466c-9372-0e21a76ea357)
+We see that we have root user access.
+
+Now for the final step, we have to get the root flag.
+The flag is in the root directory. Find it and your challenge is completed.
+
