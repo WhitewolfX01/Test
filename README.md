@@ -4,6 +4,20 @@
 
 Welcome to this CTF challenge, where you'll exploit CVE-2023-32315 in Openfire, a messaging and group chat server. This vulnerability allows an authentication bypass via a path traversal attack, granting unauthorized access to application files and enabling Remote Code Execution (RCE). Your goal is to exploit this flaw, gain access, and capture the flag.
 
+## Skills Required
+Basic Linux
+
+Basic Network Enumeration
+
+Running scripts
+
+## Skills Learned
+Identifying vulnerable services
+
+XMPP Enumeration and Exploitation 
+
+Remote Code Execution
+
 ## Info for HTB
 
 ### Access
@@ -41,7 +55,9 @@ Ports:
 ## Docker
 
 This docker image is being used with some slight modification.
+```
 git clone https://github.com/luzifer-docker/openfire
+```
 
 DockerFile
 ```
